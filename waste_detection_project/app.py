@@ -21,7 +21,7 @@ st.write("Upload a photo of messy waste. The model finds each object, names it, 
 # ---------------- Sidebar: settings ----------------
 with st.sidebar:
     st.header("Settings")
-    weights_path = st.text_input("Model file", value="best.pt")
+          weights_path = st.text_input("Model file", value=str(Path(__file__).parent / "best.pt"))
     conf = st.slider("Confidence threshold", min_value=0.05, max_value=0.95, value=0.25, step=0.05,
                      help="Boxes with a score below this value are hidden. "
                           "Lower = finds more (but more false alarms).")
