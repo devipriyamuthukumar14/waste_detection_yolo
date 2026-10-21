@@ -50,4 +50,4 @@ if uploaded is None:
     st.stop()
 
 pil_image = ImageOps.exif_transpose(Image.open(uploaded)).convert("RGB")   # fix phone-photo rotation
-image_bgr =
+image_bgr = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)           # OpenCV uses BGR
