@@ -10,6 +10,7 @@ The three parent categories used in the project are:
 3. Non-biodegradable / Recyclable
 """
 
+
 # ============================================================
 # PARENT CATEGORIES
 # ============================================================
@@ -109,13 +110,28 @@ PARENT_CATEGORY = {
     "Styrofoam_product": NON_BIODEGRADABLE,
     "styrofoam_product": NON_BIODEGRADABLE,
 
-    # Sanitary products are kept separate from chemical
-    # hazardous waste in their disposal guidance.
+
+    # --------------------------------------------------------
+    # SANITARY WASTE
+    # --------------------------------------------------------
+    # The trained model is currently predicting
+    # "medical_sanitary" for sanitary-pad images.
+    # Keep this separate from chemical hazardous waste.
+
+    "medical_sanitary": NON_BIODEGRADABLE,
+    "Medical_sanitary": NON_BIODEGRADABLE,
+    "medical_sanitary_waste": NON_BIODEGRADABLE,
+
     "Sanitary_napkin": NON_BIODEGRADABLE,
     "sanitary_napkin": NON_BIODEGRADABLE,
 
     "Diapers": NON_BIODEGRADABLE,
     "diapers": NON_BIODEGRADABLE,
+
+
+    # --------------------------------------------------------
+    # OTHER
+    # --------------------------------------------------------
 
     "cigarette_butt": NON_BIODEGRADABLE,
 
@@ -134,9 +150,9 @@ PARENT_CATEGORY = {
 
 PARENT_COLOR_BGR = {
 
-    HAZARDOUS: (0, 0, 255),             # Red
-    BIODEGRADABLE: (0, 170, 0),         # Green
-    NON_BIODEGRADABLE: (255, 128, 0),   # Blue
+    HAZARDOUS: (0, 0, 255),
+    BIODEGRADABLE: (0, 170, 0),
+    NON_BIODEGRADABLE: (255, 128, 0),
 }
 
 
@@ -394,8 +410,29 @@ GUIDANCE = {
 
 
     # --------------------------------------------------------
-    # SANITARY PRODUCTS
+    # SANITARY WASTE
     # --------------------------------------------------------
+
+    "medical_sanitary": (
+        "Wrap the used sanitary item securely in paper or its "
+        "original wrapper. Place it in a designated sanitary-waste "
+        "or general-waste bin according to local rules. "
+        "Do not place used sanitary items in recycling or compost bins."
+    ),
+
+    "Medical_sanitary": (
+        "Wrap the used sanitary item securely in paper or its "
+        "original wrapper. Place it in a designated sanitary-waste "
+        "or general-waste bin according to local rules. "
+        "Do not place used sanitary items in recycling or compost bins."
+    ),
+
+    "medical_sanitary_waste": (
+        "Wrap the used sanitary item securely in paper or its "
+        "original wrapper. Place it in a designated sanitary-waste "
+        "or general-waste bin according to local rules. "
+        "Do not place used sanitary items in recycling or compost bins."
+    ),
 
     "Sanitary_napkin": (
         "Wrap the used sanitary napkin securely in paper or its "
@@ -469,7 +506,10 @@ def get_parent(class_name):
     Return the parent category for a detected waste class.
     Returns 'Unknown' if the class is not defined.
     """
-    return PARENT_CATEGORY.get(class_name, "Unknown")
+    return PARENT_CATEGORY.get(
+        class_name,
+        "Unknown"
+    )
 
 
 def get_guidance(class_name):
@@ -478,5 +518,5 @@ def get_guidance(class_name):
     """
     return GUIDANCE.get(
         class_name,
-        DEFAULT_GUIDANCE,
+        DEFAULT_GUIDANCE
     )
