@@ -1,8 +1,5 @@
 """
-app.py
-
-Streamlit web application for:
-Real-World Waste Detection and Classification Using Deep Learning
+app.py: Streamlit web app for Real-World Waste Detection.
 
 Run with:
     streamlit run app.py
@@ -25,6 +22,10 @@ from detect import (
 )
 
 from waste_info import (
+    ALL_PARENTS,
+    HAZARDOUS,
+    HAZARD_DISCLAIMER,
+    get_guidance,
     get_parent,
 )
 
@@ -42,9 +43,8 @@ st.set_page_config(
 st.title("♻️ Real-World Waste Detection and Classification")
 
 st.write(
-    "Upload an image containing waste objects. The YOLO model "
-    "detects individual objects and classifies them into their "
-    "respective waste classes and categories."
+    "Upload a photo of messy waste. The model detects individual objects, "
+    "classifies them, and shows their waste category and general disposal guidance."
 )
 
 APP_DIR = Path(__file__).parent
@@ -55,7 +55,6 @@ APP_DIR = Path(__file__).parent
 # ============================================================
 
 with st.sidebar:
-
     st.header("⚙️ Settings")
 
     weights_path = st.text_input(
@@ -71,8 +70,7 @@ with st.sidebar:
         step=0.05,
         help=(
             "Detections below this confidence are hidden. "
-            "Lower values may detect more objects but can also "
-            "produce more false detections."
+            "Lower values may find more objects but can produce more false detections."
         ),
     )
 
@@ -80,13 +78,11 @@ with st.sidebar:
 
     st.markdown(
         """
-        ### Waste Categories
+        **Waste categories**
 
-        🟥 **Hazardous**
-
-        🟩 **Biodegradable**
-
-        🟦 **Non-biodegradable / Recyclable**
+        🟥 Hazardous  
+        🟩 Biodegradable  
+        🟦 Non-biodegradable / Recyclable
         """
     )
 
@@ -102,27 +98,19 @@ def get_model(path):
 
 
 if not Path(weights_path).exists():
-
     st.error(
-        f"Model file not found:\n\n"
-        f"`{weights_path}`\n\n"
+        f"Model file not found:\n\n`{weights_path}`\n\n"
         "Place your trained `best.pt` file in the project folder "
         "or enter the correct model path in the sidebar."
     )
-
     st.stop()
 
 
 try:
-
     model = get_model(weights_path)
 
 except Exception as e:
-
-    st.error(
-        f"Could not load the YOLO model: {e}"
-    )
-
+    st.error(f"Could not load the YOLO model: {e}")
     st.stop()
 
 
@@ -131,18 +119,14 @@ except Exception as e:
 # ============================================================
 
 uploaded = st.file_uploader(
-    "📷 Upload a waste image",
+    "Upload a waste image",
     type=["jpg", "jpeg", "png"],
     help="Upload an image containing one or more waste objects.",
 )
 
 
 if uploaded is None:
-
-    st.info(
-        "👆 Upload an image to begin."
-    )
-
+    st.info("👆 Upload an image to begin.")
     st.stop()
 
 
@@ -151,24 +135,17 @@ if uploaded is None:
 # ============================================================
 
 try:
-
     pil_image = ImageOps.exif_transpose(
         Image.open(uploaded)
     ).convert("RGB")
 
-    image_rgb = np.array(pil_image)
-
     image_bgr = cv2.cvtColor(
-        image_rgb,
+        np.array(pil_image),
         cv2.COLOR_RGB2BGR,
     )
 
 except Exception as e:
-
-    st.error(
-        f"Could not read the uploaded image: {e}"
-    )
-
+    st.error(f"Could not read the uploaded image: {e}")
     st.stop()
 
 
@@ -179,7 +156,6 @@ except Exception as e:
 with st.spinner("🔍 Detecting waste objects..."):
 
     try:
-
         detections = detect_waste(
             model,
             image_bgr,
@@ -187,11 +163,7 @@ with st.spinner("🔍 Detecting waste objects..."):
         )
 
     except Exception as e:
-
-        st.error(
-            f"Detection failed: {e}"
-        )
-
+        st.error(f"Detection failed: {e}")
         st.stop()
 
 
@@ -200,9 +172,8 @@ with st.spinner("🔍 Detecting waste objects..."):
 # ============================================================
 
 try:
-
     annotated_bgr = draw_detections(
-        image_bgr,
+        image_bgr.copy(),
         detections,
     )
 
@@ -212,11 +183,7 @@ try:
     )
 
 except Exception as e:
-
-    st.error(
-        f"Could not draw detection boxes: {e}"
-    )
-
+    st.error(f"Could not draw detection boxes: {e}")
     st.stop()
 
 
@@ -234,10 +201,8 @@ st.image(
 # ============================================================
 
 if not detections:
-
     st.warning(
-        "No waste objects were detected above the selected "
-        "confidence threshold."
+        "No waste objects were detected above the selected confidence threshold."
     )
 
     st.info(
@@ -252,17 +217,12 @@ if not detections:
 # COUNTS
 # ============================================================
 
-class_counts = count_by_class(
-    detections
-)
-
-parent_counts = count_by_parent(
-    detections
-)
+class_counts = count_by_class(detections)
+parent_counts = count_by_parent(detections)
 
 
 # ============================================================
-# SUMMARY
+# SUMMARY METRICS
 # ============================================================
 
 st.subheader("📊 Waste Summary")
@@ -271,39 +231,25 @@ total_objects = len(detections)
 
 col1, col2, col3, col4 = st.columns(4)
 
-
 with col1:
-
     st.metric(
         "Total Objects",
         total_objects,
     )
 
-
 with col2:
-
     st.metric(
         "Hazardous",
-        parent_counts.get(
-            "Hazardous",
-            0,
-        ),
+        parent_counts.get("Hazardous", 0),
     )
-
 
 with col3:
-
     st.metric(
         "Biodegradable",
-        parent_counts.get(
-            "Biodegradable",
-            0,
-        ),
+        parent_counts.get("Biodegradable", 0),
     )
 
-
 with col4:
-
     st.metric(
         "Non-biodegradable",
         parent_counts.get(
@@ -323,9 +269,7 @@ class_rows = []
 
 for class_name, count in class_counts.items():
 
-    parent = get_parent(
-        class_name
-    )
+    parent = get_parent(class_name)
 
     class_rows.append(
         {
@@ -335,10 +279,7 @@ for class_name, count in class_counts.items():
         }
     )
 
-
-class_df = pd.DataFrame(
-    class_rows
-)
+class_df = pd.DataFrame(class_rows)
 
 st.dataframe(
     class_df,
@@ -358,23 +299,20 @@ detail_rows = []
 for detection in detections:
 
     class_name = detection["class_name"]
-
     confidence = detection["confidence"]
 
-    parent = detection["parent"]
+    parent = get_parent(class_name)
 
     detail_rows.append(
         {
             "Detected Object": class_name,
-            "Confidence": f"{confidence:.1%}",
+            "Confidence": f"{float(confidence):.1%}",
             "Category": parent,
         }
     )
 
 
-details_df = pd.DataFrame(
-    detail_rows
-)
+details_df = pd.DataFrame(detail_rows)
 
 st.dataframe(
     details_df,
@@ -391,11 +329,7 @@ st.subheader("📂 Category Breakdown")
 
 category_rows = []
 
-for category in [
-    "Hazardous",
-    "Biodegradable",
-    "Non-biodegradable / Recyclable",
-]:
+for category in ALL_PARENTS:
 
     category_rows.append(
         {
@@ -407,10 +341,7 @@ for category in [
         }
     )
 
-
-category_df = pd.DataFrame(
-    category_rows
-)
+category_df = pd.DataFrame(category_rows)
 
 st.dataframe(
     category_df,
@@ -420,22 +351,41 @@ st.dataframe(
 
 
 # ============================================================
-# PROJECT INFORMATION
+# DISPOSAL GUIDANCE
+# ============================================================
+
+st.subheader("♻️ General Disposal Guidance")
+
+unique_classes = list(class_counts.keys())
+
+for class_name in unique_classes:
+
+    parent = get_parent(class_name)
+
+    guidance = get_guidance(class_name)
+
+    with st.expander(
+        f"{class_name} — {parent}"
+    ):
+
+        st.write(guidance)
+
+        # Show the hazardous disclaimer only for
+        # genuinely hazardous parent categories.
+        if parent == HAZARDOUS:
+            st.warning(HAZARD_DISCLAIMER)
+
+
+# ============================================================
+# PROJECT DISCLAIMER
 # ============================================================
 
 st.markdown("---")
 
-st.subheader("ℹ️ About the System")
-
-st.write(
-    "This application uses a YOLO11n object detection model "
-    "to identify individual waste objects in an image. "
-    "Each detected object is given a class name, confidence "
-    "score, and parent waste category."
-)
-
 st.caption(
     "⚠️ This system provides AI-based visual classification only. "
-    "Predictions may be incorrect, especially for unclear, "
-    "overlapping, or previously unseen waste objects."
+    "Predictions may be incorrect, especially for unclear, overlapping, "
+    "or previously unseen waste objects. Hazardous-waste classification "
+    "should not be treated as confirmation of chemical contents or contamination. "
+    "Follow local waste-management and authorized disposal guidance."
 )
