@@ -17,8 +17,6 @@ PARENT_CATEGORY = {
     "battery": HAZARDOUS,
     "aerosol_can": HAZARDOUS,
     "ewaste_device": HAZARDOUS,             # optional extra dataset
-    "medical_sanitary": HAZARDOUS,          # optional extra dataset
-    "paint_chemical_container": HAZARDOUS,  # optional extra dataset
     # Biodegradable
     "food_waste": BIODEGRADABLE,
     # Non-biodegradable / recyclable
@@ -34,6 +32,9 @@ PARENT_CATEGORY = {
     "plastic_other": NON_BIODEGRADABLE,
     "metal_scrap_foil": NON_BIODEGRADABLE,
     "other_litter": NON_BIODEGRADABLE,      # mixed bucket (shoes, rope, unlabeled litter)
+    #sanitary-waste
+    "medical_waste": NON_BIODEGRADABLE,          # optional extra dataset
+    "paint_chemical_container": NON_BIODEGRADABLE,
 }
 
 # ---- Box colours for drawing (OpenCV uses BGR order: Blue, Green, Red) ----
@@ -60,7 +61,7 @@ GUIDANCE = {
                    "hazardous-waste drop-off.",
     "ewaste_device": "Electronic devices contain materials that should not go in normal bins. "
                      "Use an authorised e-waste collection or recycling centre.",
-    "medical_sanitary": "Medical or sanitary items need special handling. Do not mix them with "
+    "medical_waste": "Medical or sanitary items need special handling. Do not mix them with "
                         "household recyclables; ask a local authorised facility how to dispose of them.",
     "paint_chemical_container": "Containers that held paint or chemicals may contain residue. "
                                 "Do not reuse or mix them with normal waste; consult a local authorised "
@@ -87,6 +88,17 @@ GUIDANCE = {
                      "Usually dry-waste bin; cut six-pack rings before disposal so wildlife is not trapped.",
     "metal_scrap_foil": "Foil, pull-tabs and scrap metal: collect separately with metal recyclables if your "
                         "local system accepts them. Sharp pieces should be handled with care.",
+    "Sanitary_napkin": (
+    "Wrap the used sanitary napkin securely in paper or its original wrapper "
+    "and place it in a designated sanitary-waste or general waste bin, "
+    "according to local waste-management rules. Do not place it in recycling bins."
+),
+
+"Diapers": (
+    "Wrap the used diaper securely and place it in a designated sanitary-waste "
+    "or general waste bin according to local waste-management rules. "
+    "Do not place used diapers in recycling or compost bins."
+),
     "other_litter": "Mixed items (for example shoes, rope, or unidentified litter). Put them in the dry-waste "
                     "bin; reusable or textile items may be donated or taken to textile recycling.",
 }
