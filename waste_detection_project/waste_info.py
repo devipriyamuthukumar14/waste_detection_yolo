@@ -65,6 +65,7 @@ PARENT_CATEGORY = {
 
     "Cardboard": BIODEGRADABLE,
     "cardboard": BIODEGRADABLE,
+    "paper_cardboard": BIODEGRADABLE,
 
     "Textile_trash": BIODEGRADABLE,
     "textile_trash": BIODEGRADABLE,
@@ -76,6 +77,7 @@ PARENT_CATEGORY = {
 
     "Cans": NON_BIODEGRADABLE,
     "cans": NON_BIODEGRADABLE,
+    "metal_can": NON_BIODEGRADABLE,
 
     "Glass": NON_BIODEGRADABLE,
     "glass": NON_BIODEGRADABLE,
@@ -271,6 +273,11 @@ GUIDANCE = {
         "recycling where available."
     ),
 
+    "paper_cardboard": (
+    "Keep cardboard clean and dry and place it with paper/cardboard "
+    "recycling where available."
+),
+
     "Textile_trash": (
         "Reusable textiles can be donated or sent to a suitable textile "
         "collection facility. Follow local rules for damaged textiles."
@@ -295,6 +302,11 @@ GUIDANCE = {
         "Empty cans and place them with metal recycling where "
         "this service is available."
     ),
+
+    "metal_can": (
+    "Empty cans and place them with metal recycling where "
+    "this service is available."
+),
 
     "Glass": (
         "Place suitable glass items in a glass-recycling collection "
