@@ -381,11 +381,3 @@ for class_name in unique_classes:
 # ============================================================
 
 st.markdown("---")
-
-st.caption(
-    "⚠️ This system provides AI-based visual classification only. "
-    "Predictions may be incorrect, especially for unclear, overlapping, "
-    "or previously unseen waste objects. Hazardous-waste classification "
-    "should not be treated as confirmation of chemical contents or contamination. "
-    "Follow local waste-management and authorized disposal guidance."
-)
